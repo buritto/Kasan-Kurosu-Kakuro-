@@ -14,6 +14,9 @@ class GameField:
 
     def init_cell(self, x, y, cell):
         self.filed[x][y] = cell
+        if cell.is_rules():
+            self.init_row(x, y + 1, cell.get_length_row())
+            self.init_column(x + 1, y, cell.gey_length_column())
 
     def check_correct_field(self):
         for x in range(0, self.height):
@@ -37,4 +40,11 @@ class GameField:
                 return False
         return True
 
+    def init_row(self, pos_x, pos_y, length_row):
+        for y in range(0, length_row):
+            self.filed[pos_x][pos_y + y] = Cell(CellType.PLAY, 0)
+
+    def init_column(self, pos_x, pos_y, length_column):
+        for x in range(0, length_column):
+            self.filed[pos_x + x][pos_y] = Cell(CellType.PLAY, 0)
 
