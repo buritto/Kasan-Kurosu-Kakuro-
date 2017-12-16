@@ -2,21 +2,36 @@ from game_cell import Cell
 from cell_type import CellType
 
 
+class Pair:
+    def __init__(self, cell):
+        self.cell = cell
+        self.slaves = []
+
+
 class GameField:
     def __init__(self, width, height):
         self.width = width
         self.height = height
         self.filed = []
+        self.row_pairs = []
+        self.column_pairs = []
+        self.all_pairs = []
         for x in range(0, height):
             self.filed[x] = []
             for y in range(0, width):
-                self.filed[x][y] = Cell(CellType.NO_ACTIVE)
+                self.filed[x][y].append(Cell(CellType.NO_ACTIVE))
 
     def init_cell(self, x, y, cell):
         self.filed[x][y] = cell
         if cell.is_rules():
-            self.init_row(x, y + 1, cell.get_length_row())
-            self.init_column(x + 1, y, cell.gey_length_column())
+            pair = Pair(cell)
+            self.all_pairs.append(pair)
+            if cell.get_length_row():
+                self.row_pairs.append(pair)
+                self.init_row(x, y + 1, cell.get_length_row(), self.row_pairs[-1])
+            if cell.get_length_column():
+                self.column_pairs.append(pair)
+                self.init_column(x + 1, y, cell.gey_length_column(), self.column_pairs[-1])
 
     def check_correct_field(self):
         for x in range(0, self.height):
@@ -40,11 +55,14 @@ class GameField:
                 return False
         return True
 
-    def init_row(self, pos_x, pos_y, length_row):
+    def init_row(self, pos_x, pos_y, length_row, pair):
         for y in range(0, length_row):
-            self.filed[pos_x][pos_y + y] = Cell(CellType.PLAY, 0)
+            cell = Cell(CellType.PLAY, 0)
+            self.filed[pos_x][pos_y + y].append(cell)
+            pair.slaves.append(cell)
 
-    def init_column(self, pos_x, pos_y, length_column):
+    def init_column(self, pos_x, pos_y, length_column, pair):
         for x in range(0, length_column):
-            self.filed[pos_x + x][pos_y] = Cell(CellType.PLAY, 0)
-
+            cell = Cell(CellType.PLAY)
+            self.filed[pos_x + x][pos_y].append(cell)
+            pair.slaves.append(cell)

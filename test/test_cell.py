@@ -1,6 +1,5 @@
 import unittest
 import sys
-print(sys.path)
 sys.path.append('C:\\Programm\\KasanKurosu\\Kasan-Kurosu-Kakuro-')
 
 from cell_type import CellType
@@ -24,6 +23,10 @@ class CellTest(unittest.TestCase):
         rule_column = 10
         c = Cell(CellType.RULES, column_rule=rule_column, row_rule=rule_row)
         self.assertEqual([rule_row, rule_column], c.get_rules())
+
+    def test_is_rule(self):
+        c = Cell(CellType.RULES)
+        self.assertTrue(c.is_rules())
 
 
 if __name__ == '__main__':

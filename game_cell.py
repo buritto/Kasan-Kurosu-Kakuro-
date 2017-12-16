@@ -26,5 +26,8 @@ class Cell:
     def get_length_row(self):
         return self._length_row
 
-    def gey_length_column(self):
+    def get_length_column(self):
         return self._length_column
+
+    def set_value(self, value):
+        self._value = value
