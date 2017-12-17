@@ -2,6 +2,11 @@ from game_field import GameField
 from game_cell import Cell
 from cell_type import CellType
 from solver import Solver
+from PIL import ImageTk
+from  PIL import Image, ImageDraw
+
+
+
 
 all_list = []
 i = 0

@@ -1,6 +1,8 @@
 import unittest
 import sys
-sys.path.append('C:\\Programm\\KasanKurosu\\Kasan-Kurosu-Kakuro-')
+import os
+#
+# sys.path.append('C:\\Programm\\KasanKurosu\\Kasan-Kurosu-Kakuro-')
 
 from cell_type import CellType
 from game_cell import Cell
