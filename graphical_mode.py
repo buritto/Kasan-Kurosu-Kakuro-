@@ -11,7 +11,7 @@ from solver import Solver
 from tkinter import messagebox
 from tkinter import filedialog
 from kakuro_parser import Parser
-
+from painter import Painter
 
 class GUI:
     def __init__(self, root, dimension):
@@ -125,7 +125,6 @@ class GUI:
             numbers = self.count_number(column)
             drawer.text([0, self.size_button // 2], text=to_str[0:numbers], fill='black')
         drawer.line([0, 0, self.size_button, self.size_button], 'black')
-        img.save("res.bmp")
         p_img = ImageTk.PhotoImage(img)
         self.all_img.append(p_img)
         return p_img
@@ -151,6 +150,7 @@ class GUI:
         file_menu = Menu(menu_bar)
         file_menu.add_command(label='Create new kakuro', command=self.start_setting)
         file_menu.add_command(label='Open from file', command=self.open_from_file)
+        file_menu.add_command(label="Save kakuro to image file", command=self.save)
         menu_bar.add_cascade(label='File', menu=file_menu)
         solve_menu = Menu(menu_bar, tearoff=0)
         solve_menu.add_command(label='Solve', command=self.solve)
@@ -230,6 +230,14 @@ class GUI:
                 for key in cells.keys():
                     self.game_field.init_cell(key[0], key[1], cells[key])
                     self.redraw()
+
+    def save(self):
+        path = filedialog.asksaveasfile(mode='w', defaultextension='.png',
+                                             filetypes=(('png files', '*.png'), ("all files", "*.*")))
+        if path is not None:
+            painter = Painter(self.size_button)
+            painter.paint(self.game_field.field, path.name, self.dimension)
+
 
 
 if __name__ == '__main__':
