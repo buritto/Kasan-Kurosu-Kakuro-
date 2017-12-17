@@ -17,8 +17,16 @@ class Solver:
                     self.all_cells.append(self.game.field[x][y])
 
     def sort_solution(self, n, k):
+        line = ""
+        for cell in self.all_cells:
+            line += str(cell.get_value())
+        #print(line)
+        if (line == '9821'):
+            print('aw')
+        #self.print_field(self.game.field)
         if self.is_correct_solve():
             self.solution = copy.deepcopy(self.game.field)
+            print("ok")
         if n == k:
             return
         for i in range(1, 10):
@@ -28,7 +36,6 @@ class Solver:
     def solve(self):
         self.get_list()
         self.sort_solution(len(self.all_cells), 0)
-        print('Done')
         if self.solution is None:
             raise KakuroNotSolution("Not solution")
         else:
@@ -36,15 +43,39 @@ class Solver:
 
     def is_correct_solve(self):
         for pair in self.game.all_pairs:
-            sum = 0
-            for pos_cell in pair.slaves:
-                sum += self.game.field[pos_cell[0]][pos_cell[1]].get_value()
-            if sum != pair.cell.get_rules()[0] and sum != pair.cell.get_rules()[1]:
+            sum_row = 0
+            sum_column = 0
+            for pos_cell in pair.row_slaves:
+                sum_row += self.game.field[pos_cell[0]][pos_cell[1]].get_value()
+            for pos_cell in pair.column_slaves:
+                sum_column += self.game.field[pos_cell[0]][pos_cell[1]].get_value()
+
+            if sum_row != pair.cell.get_rules()[0] and pair.cell.get_rules()[0] != -1:
+                    return False
+            if sum_column != pair.cell.get_rules()[1] and pair.cell.get_rules()[1] != -1:
                 return False
-            expected = len(pair.slaves)
-            actual = []
-            for pos_cell in pair.slaves:
-                actual.append(self.game.field[pos_cell[0]][pos_cell[1]].get_value())
-            if len(set(actual)) != expected:
+            expected_row = len(pair.row_slaves)
+            expected_column = len(pair.column_slaves)
+            actual_row = []
+            actual_column = []
+            for pos_cell in pair.row_slaves:
+                actual_row.append(self.game.field[pos_cell[0]][pos_cell[1]].get_value())
+            if len(set(actual_row)) != expected_row:
+                return False
+            for pos_cell in pair.column_slaves:
+                actual_column.append(self.game.field[pos_cell[0]][pos_cell[1]].get_value())
+            if len(set(actual_column)) != expected_column:
                 return False
         return True
+
+    def print_field(self, field):
+        for x in range(0, len(field)):
+            line = ""
+            for y in range(0, len(field)):
+                if field[x][y].get_type() == CellType.NO_ACTIVE:
+                    line += ' # \t'
+                if field[x][y].get_type() == CellType.PLAY:
+                    line += ' ' + str(field[x][y].get_value()) + ' \t'
+                if field[x][y].get_type() == CellType.RULES:
+                    line += ' ' + str(field[x][y].get_rules()[1]) + '\\' + str(field[x][y].get_rules()[0]) + '\t'
+            print(line)

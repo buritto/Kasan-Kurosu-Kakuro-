@@ -78,11 +78,11 @@ class GUI:
             return
         if not self.check_arguments(row_rule, column_rule, row, column, x, y, root):
             return
+        self.close_window(root)
         print('Correct')
         cell = Cell(CellType.RULES, row_rule=row_rule, column_rule=column_rule, length_row=row, length_column=column)
         self.game_field.init_cell(x, y, cell)
         self.redraw()
-        self.close_window(root)
 
     def check_arguments(self, row_rule, column_rule, row, column, x, y, setting_root):
         if column_rule > 45 or row_rule > 45:
@@ -91,10 +91,10 @@ class GUI:
         if row_rule < 0 or column_rule < 0 or row < 0 or column < 0:
             self.throw_exception('Argument error', 'One or more argument less zero', setting_root)
             return False
-        if x + row >= self.dimension:
+        if x + column >= self.dimension:
             self.throw_exception('Argument error', 'Row length too large', setting_root)
             return False
-        if y + column >= self.dimension:
+        if y + row >= self.dimension:
             self.throw_exception('Argument error', 'Column length too large', setting_root)
             return False
         return True
@@ -194,6 +194,8 @@ class GUI:
             return
         self.game_field = GameField(dimension, dimension)
         self.dimension = dimension
+        self.all_img.clear()
+        self.list_button.clear()
         self.draw_field()
         self.root.geometry("{0}x{1}".format(dimension * 70, dimension * 70))
         self.root.update()

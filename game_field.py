@@ -5,7 +5,8 @@ from cell_type import CellType
 class Pair:
     def __init__(self, cell):
         self.cell = cell
-        self.slaves = []
+        self.row_slaves = []
+        self.column_slaves = []
 
 
 class GameField:
@@ -37,10 +38,10 @@ class GameField:
         for y in range(0, length_row):
             cell = Cell(CellType.PLAY, 0)
             self.field[pos_x][pos_y + y] = cell
-            pair.slaves.append(tuple([pos_x, pos_y + y]))
+            pair.row_slaves.append(tuple([pos_x, pos_y + y]))
 
     def init_column(self, pos_x, pos_y, length_column, pair):
         for x in range(0, length_column):
             cell = Cell(CellType.PLAY)
             self.field[pos_x + x][pos_y] = cell
-            pair.slaves.append(tuple([pos_x + x, pos_y]))
+            pair.column_slaves.append(tuple([pos_x + x, pos_y]))
