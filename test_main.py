@@ -44,9 +44,10 @@ if __name__ == '__main__':
     game.init_cell(3, 1, Cell(CellType.RULES, row_rule=3, length_row=2))
     game.init_cell(1, 3, Cell(CellType.RULES, column_rule=4, length_column=2))
     print_field(game.field)
-    solver = Solver(game)
-    new_field = solver.solve()
-    print_field(new_field)
+    #solver = Solver(game)
+    #new_field = solver.solve()
+    #print_field(new_field)
+    print(tuple([1, 2, 3]))
 
 
 

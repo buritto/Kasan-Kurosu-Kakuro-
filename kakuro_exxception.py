@@ -8,6 +8,10 @@ class KakuroNotSolution(KakuroException):
     pass
 
 
+class IncorrectFileArgument(KakuroException):
+    pass
+
+
 class GUIException(Exception):
 
     def __init__(self, msg):

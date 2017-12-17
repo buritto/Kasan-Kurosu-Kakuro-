@@ -20,10 +20,6 @@ class Solver:
         line = ""
         for cell in self.all_cells:
             line += str(cell.get_value())
-        #print(line)
-        if (line == '9821'):
-            print('aw')
-        #self.print_field(self.game.field)
         if self.is_correct_solve():
             self.solution = copy.deepcopy(self.game.field)
             print("ok")

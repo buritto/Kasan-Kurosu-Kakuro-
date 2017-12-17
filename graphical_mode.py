@@ -9,6 +9,8 @@ from PIL import Image, ImageDraw
 import os
 from solver import Solver
 from tkinter import messagebox
+from tkinter import filedialog
+from kakuro_parser import Parser
 
 
 class GUI:
@@ -79,7 +81,6 @@ class GUI:
         if not self.check_arguments(row_rule, column_rule, row, column, x, y, root):
             return
         self.close_window(root)
-        print('Correct')
         cell = Cell(CellType.RULES, row_rule=row_rule, column_rule=column_rule, length_row=row, length_column=column)
         self.game_field.init_cell(x, y, cell)
         self.redraw()
@@ -149,6 +150,7 @@ class GUI:
         menu_bar = Menu(self.root)
         file_menu = Menu(menu_bar)
         file_menu.add_command(label='Create new kakuro', command=self.start_setting)
+        file_menu.add_command(label='Open from file', command=self.open_from_file)
         menu_bar.add_cascade(label='File', menu=file_menu)
         solve_menu = Menu(menu_bar, tearoff=0)
         solve_menu.add_command(label='Solve', command=self.solve)
@@ -180,9 +182,10 @@ class GUI:
         cancel.grid(row=1, column=2)
         start_setting_root.mainloop()
 
-    def start_new_kakuro(self, entry_dimension, start_root):
+    def start_new_kakuro(self, entry_dimension, start_root, dimension=0):
         try:
-            dimension = int(entry_dimension.get())
+            if dimension == 0:
+                dimension = int(entry_dimension.get())
         except Exception as e:
             self.throw_exception('Incorrect dimension', 'Dimension is NaN', start_root)
             return
@@ -192,6 +195,10 @@ class GUI:
         if dimension > 10:
             self.throw_exception('Incorrect dimension', 'Dimension too large', start_root)
             return
+        self.init_new_kakuro(dimension)
+        self.close_window(start_root)
+
+    def init_new_kakuro(self, dimension):
         self.game_field = GameField(dimension, dimension)
         self.dimension = dimension
         self.all_img.clear()
@@ -199,11 +206,30 @@ class GUI:
         self.draw_field()
         self.root.geometry("{0}x{1}".format(dimension * 70, dimension * 70))
         self.root.update()
-        self.close_window(start_root)
 
     def throw_exception(self, title, msg, start_root):
         messagebox.showerror(title, msg)
         self.close_window(start_root)
+
+    def open_from_file(self):
+        open_file_path = filedialog.askopenfilename(title="Select file", defaultextension=".kk",
+                                                    filetypes=(('kk files', '*.kk'), ("all files", "*.*")))
+        parser = Parser()
+        if len(open_file_path) != 0:
+            try:
+                pairs = parser.parse(open_file_path)
+            except exc.IncorrectFileArgument as e:
+                messagebox.showerror('Incorrect file', e.msg)
+                return
+            except Exception as fe:
+                messagebox.showerror('Incorrect file', 'Unrecognized error in file')
+                return
+            dimension = pairs[0]
+            self.init_new_kakuro(int(dimension))
+            for cells in pairs[1:]:
+                for key in cells.keys():
+                    self.game_field.init_cell(key[0], key[1], cells[key])
+                    self.redraw()
 
 
 if __name__ == '__main__':
