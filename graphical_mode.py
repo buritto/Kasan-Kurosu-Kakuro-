@@ -8,17 +8,16 @@ from PIL import ImageTk
 from PIL import Image, ImageDraw
 import os
 from solver import Solver
+from tkinter import messagebox
 
 
 class GUI:
     def __init__(self, root, dimension):
         self.root = root
-        self.game_field = GameField(dimension, dimension)
         self.dimension = dimension
         self.img_for_button = PhotoImage(file=os.path.join(os.getcwd(), 'img', 'cell.gif'))
         self.list_button = []
         self.size_button = 64
-        self.draw_field()
         self.all_img = []
         self.draw_menu()
         self.root.mainloop()
@@ -64,9 +63,9 @@ class GUI:
         cancel.grid(row=3, column=2)
         setting_root.mainloop()
 
-    def close_window(self, root):
-        root.destroy()
-        root.quit()
+    def close_window(self, side_root):
+        side_root.destroy()
+        side_root.quit()
 
     def put_cell(self, sum_row, length_row, sum_column, length_column, x, y, root):
         try:
@@ -75,17 +74,30 @@ class GUI:
             row = int(length_row.get())
             column = int(length_column.get())
         except Exception as e:
-            #Кинуть мэссадж и закрыть окно
-            raise exc.NanSettingArgument("ona or more argument be not a number")
-        self.check_arguments(row_rule, column_rule, row, column, x, y)
+            self.throw_exception('Argument error', 'One or more argument are NaN', root)
+            return
+        if not self.check_arguments(row_rule, column_rule, row, column, x, y, root):
+            return
+        print('Correct')
         cell = Cell(CellType.RULES, row_rule=row_rule, column_rule=column_rule, length_row=row, length_column=column)
         self.game_field.init_cell(x, y, cell)
         self.redraw()
         self.close_window(root)
 
-    def check_arguments(self, row_rule, column_rule, row, column, x , y):
+    def check_arguments(self, row_rule, column_rule, row, column, x, y, setting_root):
         if column_rule > 45 or row_rule > 45:
-            raise exc.IncorrectRule
+            self.throw_exception('Argument error', 'The amount can not exceed 45', setting_root)
+            return False
+        if row_rule < 0 or column_rule < 0 or row < 0 or column < 0:
+            self.throw_exception('Argument error', 'One or more argument less zero', setting_root)
+            return False
+        if x + row >= self.dimension:
+            self.throw_exception('Argument error', 'Row length too large', setting_root)
+            return False
+        if y + column >= self.dimension:
+            self.throw_exception('Argument error', 'Column length too large', setting_root)
+            return False
+        return True
 
     def redraw(self):
         for x in range(0, self.dimension):
@@ -135,9 +147,12 @@ class GUI:
 
     def draw_menu(self):
         menu_bar = Menu(self.root)
-        menu = Menu(menu_bar, tearoff=0)
-        menu.add_command(label='Solve', command=self.solve)
-        menu_bar.add_cascade(label="Solution", menu=menu)
+        file_menu = Menu(menu_bar)
+        file_menu.add_command(label='Create new kakuro', command=self.start_setting)
+        menu_bar.add_cascade(label='File', menu=file_menu)
+        solve_menu = Menu(menu_bar, tearoff=0)
+        solve_menu.add_command(label='Solve', command=self.solve)
+        menu_bar.add_cascade(label="Solution", menu=solve_menu)
         self.root.config(menu=menu_bar)
 
     def solve(self):
@@ -148,9 +163,49 @@ class GUI:
         self.game_field.field = solution
         self.redraw()
 
+    def start_setting(self):
+        start_setting_root = Tk()
+        start_setting_root.title('Create new kakuro')
+        width = 15
+        height = 2
+        label_d = Label(start_setting_root, text='Select the dimension', width=width, height=height)
+        entry_d = Entry(start_setting_root, width=width)
+        create_button = Button(start_setting_root, width=width, height=height, text='Create')
+        cancel = Button(start_setting_root, width=width, height=height, text='Cancel')
+        cancel['command'] = partial(self.close_window, start_setting_root)
+        create_button['command'] = partial(self.start_new_kakuro, entry_d, start_setting_root)
+        label_d.grid(row=0, column=0, padx=10)
+        entry_d.grid(row=0, column=2)
+        create_button.grid(row=1, column=0)
+        cancel.grid(row=1, column=2)
+        start_setting_root.mainloop()
+
+    def start_new_kakuro(self, entry_dimension, start_root):
+        try:
+            dimension = int(entry_dimension.get())
+        except Exception as e:
+            self.throw_exception('Incorrect dimension', 'Dimension is NaN', start_root)
+            return
+        if dimension < 1:
+            self.throw_exception('Incorrect dimension', 'Dimension is less zero', start_root)
+            return
+        if dimension > 10:
+            self.throw_exception('Incorrect dimension', 'Dimension too large', start_root)
+            return
+        self.game_field = GameField(dimension, dimension)
+        self.dimension = dimension
+        self.draw_field()
+        self.root.geometry("{0}x{1}".format(dimension * 70, dimension * 70))
+        self.root.update()
+        self.close_window(start_root)
+
+    def throw_exception(self, title, msg, start_root):
+        messagebox.showerror(title, msg)
+        self.close_window(start_root)
+
 
 if __name__ == '__main__':
     root = Tk()
-    root.geometry('800x800')
+    root.geometry('800x600')
     a = GUI(root, 4)
 

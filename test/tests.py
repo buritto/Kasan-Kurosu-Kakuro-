@@ -9,6 +9,7 @@ from game_field import GameField
 from solver import Solver
 import kakuro_exxception as exc
 
+
 class SolverTest(unittest.TestCase):
     def setUp(self):
         self.game = GameField(4, 4)
@@ -46,7 +47,6 @@ class SolverTest(unittest.TestCase):
         solver = Solver(game)
         with self.assertRaises(exc.KakuroNotSolution):
             self.assertRaises(solver.solve())
-
 
 
 class FieldTest(unittest.TestCase):

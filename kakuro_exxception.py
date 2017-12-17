@@ -17,5 +17,6 @@ class GUIException(Exception):
 class NanSettingArgument(GUIException):
     pass
 
+
 class IncorrectRule(GUIException):
     pass
