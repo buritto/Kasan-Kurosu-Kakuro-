@@ -33,28 +33,6 @@ class GameField:
                 self.column_pairs.append(pair)
                 self.init_column(x + 1, y, cell.get_length_column(), self.column_pairs[-1])
 
-    def check_correct_field(self):
-        for x in range(0, self.height):
-            for y in range(0, self.width):
-                if self.field[x][y].is_rules():
-                    if not self.correct_row(x, y + 1, self.field[x][y].get_length_row()):
-                        return False
-                    if not self.correct_column(x + 1, y, self.field[x][y].get_length_column()):
-                        return False
-        return True
-
-    def correct_row(self, pos_x, pos_y, length_row):
-        for y in range(0, length_row):
-            if self.field[pos_x][pos_y + y].get_type() != CellType.PLAY:
-                return False
-        return True
-
-    def correct_column(self, pos_x, pos_y, length_column):
-        for x in range(0, length_column):
-            if self.field[pos_x + x][pos_y].get_type() != CellType.PLAY:
-                return False
-        return True
-
     def init_row(self, pos_x, pos_y, length_row, pair):
         for y in range(0, length_row):
             cell = Cell(CellType.PLAY, 0)
