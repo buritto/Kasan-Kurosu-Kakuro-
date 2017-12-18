@@ -10,6 +10,7 @@ from solver import Solver
 import kakuro_exxception as exc
 from kakuro_parser import Parser
 
+
 class SolverTest(unittest.TestCase):
     def setUp(self):
         self.game = GameField(4, 4)
