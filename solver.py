@@ -22,7 +22,6 @@ class Solver:
             line += str(cell.get_value())
         if self.is_correct_solve():
             self.solution = copy.deepcopy(self.game.field)
-            print("ok")
         if n == k:
             return
         for i in range(1, 10):
