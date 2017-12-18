@@ -62,15 +62,3 @@ class Solver:
             if len(set(actual_column)) != expected_column:
                 return False
         return True
-
-    def print_field(self, field):
-        for x in range(0, len(field)):
-            line = ""
-            for y in range(0, len(field)):
-                if field[x][y].get_type() == CellType.NO_ACTIVE:
-                    line += ' # \t'
-                if field[x][y].get_type() == CellType.PLAY:
-                    line += ' ' + str(field[x][y].get_value()) + ' \t'
-                if field[x][y].get_type() == CellType.RULES:
-                    line += ' ' + str(field[x][y].get_rules()[1]) + '\\' + str(field[x][y].get_rules()[0]) + '\t'
-            print(line)

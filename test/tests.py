@@ -8,7 +8,7 @@ from game_cell import Cell
 from game_field import GameField
 from solver import Solver
 import kakuro_exxception as exc
-
+from kakuro_parser import Parser
 
 class SolverTest(unittest.TestCase):
     def setUp(self):
@@ -92,6 +92,34 @@ class CellTest(unittest.TestCase):
     def test_is_rule(self):
         c = Cell(CellType.RULES)
         self.assertTrue(c.is_rules())
+
+
+class TestParser(unittest.TestCase):
+    def test_get_cell(self):
+        date = '0|1|0|0|16|2'
+        parser = Parser()
+        actual = parser.get_cell(date, 'fake_file')
+        cell = Cell(CellType.RULES, row_rule=0, length_row=0, column_rule=16, length_column=2)
+        expected = [16, 2]
+        for key in actual:
+            self.assertEqual(tuple([0, 1]), key)
+            self.assertTrue(actual[key].get_length_column() in expected)
+            self.assertTrue(actual[key].get_rules()[1] in expected)
+
+    def test_parse(self):
+        parser = Parser()
+        actual = parser.parse('1.kk')
+        list_position = []
+        self.assertEqual(7, len(actual))
+        for cell in actual[1:]:
+            for key in cell:
+                list_position.append(key)
+        self.assertTrue(tuple([0, 1]) in list_position)
+        self.assertTrue(tuple([0, 2]) in list_position)
+        self.assertTrue(tuple([1, 0]) in list_position)
+        self.assertTrue(tuple([2, 0]) in list_position)
+        self.assertTrue(tuple([3, 1]) in list_position)
+        self.assertTrue(tuple([1, 3]) in list_position)
 
 
 if __name__ == '__main__':
