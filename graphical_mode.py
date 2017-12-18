@@ -13,6 +13,7 @@ from tkinter import filedialog
 from kakuro_parser import Parser
 from painter import Painter
 
+
 class GUI:
     def __init__(self, root, dimension):
         self.root = root
@@ -239,9 +240,7 @@ class GUI:
             painter.paint(self.game_field.field, path.name, self.dimension)
 
 
-
 if __name__ == '__main__':
     root = Tk()
     root.geometry('800x600')
     a = GUI(root, 4)
-

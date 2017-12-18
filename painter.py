@@ -8,6 +8,8 @@ class Painter:
         self.cell_size = cell_size
     
     def paint(self, field, path, dimension):
+        if not path.endswith('.png'):
+            path += '.png'
         img = Image.new('RGB', (dimension * self.cell_size, dimension * self.cell_size), 'white')
         drawer = ImageDraw.Draw(img)
         for x in range(0, dimension):

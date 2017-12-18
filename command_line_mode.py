@@ -1,5 +1,4 @@
 from game_field import  GameField
-from kakuro_parser import  Parser
 from game_cell import Cell
 from cell_type import CellType
 from painter import Painter
